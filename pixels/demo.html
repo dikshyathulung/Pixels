@@ -1,0 +1,275 @@
+<?php
+require("connection.php");
+session_start(); 
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0px;
+            background-color: #f0f4f8; 
+            color: #333; 
+        }
+        header {
+            background-color: #4F50AA; 
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            flex-wrap: wrap; 
+        }
+        header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+        .admin-info {
+            display: flex;
+            align-items: center;
+        }
+        .admin-info span {
+            margin-left: 10px;
+            font-weight: bold;
+        }
+        .settings-icon {
+            font-size: 24px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            position: absolute;
+            right: 20px;
+            max-width: 100%;
+            margin-top: 10px; 
+        }
+        .search-bar input[type="search"] {
+            width: calc(100% - 120px); 
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .search-bar button[type="submit"] {
+            background-color: #28a745;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            flex-shrink: 0; 
+        }
+        .search-bar button[type="submit"]:hover {
+            background-color: #218838; 
+        }
+        .forms-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        .form {
+            max-width: 100%;
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+        h2 {
+            margin-top: 0;
+            color: #4F50AA; 
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        input[type="file"] {
+            padding: 5px;
+        }
+        input[type="submit"] {
+            background-color: #4F50AA; 
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #4F50AA; 
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+            word-wrap: break-word; 
+        }
+        th {
+            background-color: #f8f9fa; 
+        }
+       
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .search-bar {
+                position: static;
+                width: 100%;
+                margin-top: 20px;
+            }
+            .forms-container {
+                flex-direction: column;
+            }
+            .form {
+                max-width: 100%;
+                margin: 20px 0;
+            }
+            .admin-info img {
+                width: 40px;
+                height: 40px;
+            }
+            .admin-info span {
+                font-size: 14px;
+            }
+            .settings-icon {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="admin-info">
+            <img src="admin.webp" alt="Admin Photo">
+            <span>Rai Dikshya</span>
+            <i class="settings-icon">⚙️</i>
+        </div>
+        <div class="search-bar">
+            <input type="search" id="search-input" placeholder="Search">
+            <button id="search-button">Search</button>
+        </div>
+    </header>
+    <h1>Admin Panel</h1>
+    <div class="forms-container">
+        <!-- Add/Edit Photographer Form -->
+        <div class="form">
+            <h2>Add/Edit Photographer</h2>
+            <form id="photographer-form" action="addphotographer.php" method="post" enctype="multipart/form-data">
+
+                <label for="photographer-name">Name:</label>
+                <input type="text" id="photographer-name" name="name" required>
+                
+                <label for="photographer-email">Email:</label>
+                <input type="email" id="photographer-email" name="email" required>
+                
+                <label for="photographer-bio">Bio:</label>
+                <textarea id="photographer-bio" name="bio"></textarea>
+                
+                <label for="photographer-photo">Photo:</label>
+                <input type="file" id="photographer-photo" name="photo">
+                
+                <label for="tags">Tags:</label>
+                <input type="text" id="tags" name="tags">
+                
+                <input type="submit" value="Add/Update Photographer">
+            </form>
+        </div>
+
+        <!-- Upload Photo Form -->
+        <div class="form">
+            <h2>Upload Photo</h2>
+            <form id="upload-photo-form" action="add_photo.php" method="post" enctype="multipart/form-data">
+                <label for="photo-file">Select Photo:</label>
+                <input type="file" id="photo-file" name="photo-file" required>
+                
+                <label for="photo-caption">Caption:</label>
+                <input type="text" id="photo-caption" name="photo-caption">
+                
+                <input type="submit" value="Upload Photo">
+            </form>
+        </div>
+    </div>
+
+    <!-- View Visitor Inquiries -->
+    <div class="form">
+        <h2>View Visitor Inquiries</h2>
+        <table id="inquiries-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
+                    <th>Photographer</th>
+                    <th>Theme</th>
+                    <th>Location</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Message</th>
+                </tr>
+
+            </thead>
+            <tbody>
+            <?php
+                // Fetch and display inquiries
+                $query = "SELECT * FROM contactus";
+                $result = mysqli_query($conn, $query);
+
+                if (mysqli_num_rows($result) > 0) {
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        echo "<tr>";
+                        echo "<td>" . htmlspecialchars($row['name']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['email']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['phone']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['desired_photographer']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['photography_type']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['location']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['date']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['time']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['message']) . "</td>";
+                        echo "</tr>";
+                    }
+                } else {
+                    echo "<tr><td colspan='9'>No inquiries found.</td></tr>";
+                }
+
+                // Close the connection
+                mysqli_close($conn);
+                ?>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+
